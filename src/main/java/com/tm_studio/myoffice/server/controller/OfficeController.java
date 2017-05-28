@@ -2,36 +2,41 @@ package com.tm_studio.myoffice.server.controller;
 
 import com.tm_studio.myoffice.server.entity.Remind;
 import com.tm_studio.myoffice.server.repository.RemindRepository;
+import com.tm_studio.myoffice.server.service.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/office")
 public class OfficeController {
 
     @Autowired
-    private RemindRepository remindRepository;
+    private OfficeService service;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @RequestMapping(value = "/office", method = RequestMethod.GET)
     @ResponseBody
-    public Remind getNotification() {
-        List<Remind> list = remindRepository.findAll();
-        return createMockRemind();
+    public List<Remind> getAllNotifications() {
+        return service.getAll();
     }
 
+    @RequestMapping(value = "/office/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public Remind getNotification(@PathVariable("id") long remindID) {
+        return service.getById(remindID);
+    }
 
-    private Remind createMockRemind() {
-        Remind remind = new Remind();
-        remind.setId(1);
-        remind.setMeetDate(new Date());
-        remind.setTitle("My first Meet");
-        return  remind;
+    @RequestMapping(value = "/office", method = RequestMethod.POST)
+    @ResponseBody
+    public Remind saveNotification(@RequestBody Remind remind) {
+        return service.save(remind);
+    }
+
+    //DELETE or POST ???
+    @RequestMapping(value = "/office/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteNotification(@PathVariable("id") long remindID) {
+        service.delete(remindID);
     }
 
 }
