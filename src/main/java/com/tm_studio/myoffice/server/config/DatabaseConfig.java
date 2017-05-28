@@ -32,10 +32,10 @@ public class DatabaseConfig {
     private Environment env;
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(env.getRequiredProperty("db.entity.packege"));
+        em.setPackagesToScan(env.getRequiredProperty("db.entity.package"));
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(getHibernateProperties());
 
@@ -51,8 +51,8 @@ public class DatabaseConfig {
         ds.setPassword(env.getRequiredProperty("db.password"));
 
         ds.setInitialSize(Integer.valueOf(env.getRequiredProperty("db.initialSize")));
-        ds.setMaxIdle(Integer.valueOf(env.getRequiredProperty("db.maxIdle")));
         ds.setMinIdle(Integer.valueOf(env.getRequiredProperty("db.minIdle")));
+        ds.setMaxIdle(Integer.valueOf(env.getRequiredProperty("db.maxIdle")));
         ds.setTimeBetweenEvictionRunsMillis(Long.valueOf(env.getRequiredProperty("db.timeBetweenEvictionRunsMillis")));
         ds.setMinEvictableIdleTimeMillis(Long.valueOf(env.getRequiredProperty("db.minEvictableIdleTimeMillis")));
         ds.setTestOnBorrow(Boolean.valueOf(env.getRequiredProperty("db.testOnBorrow")));
@@ -62,9 +62,9 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public PlatformTransactionManager platformTransactionManager() {
+    public PlatformTransactionManager transactionManager() {
         JpaTransactionManager manager = new JpaTransactionManager();
-        manager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
+        manager.setEntityManagerFactory(entityManagerFactory().getObject());
 
         return manager;
     }
@@ -77,7 +77,7 @@ public class DatabaseConfig {
 
             return properties;
         } catch (IOException e) {
-            throw new IllegalArgumentException("Cannot find 'hibernate.properties' in classpath!");
+            throw new IllegalArgumentException("Cannot find 'hibernate.properties' in classpath!", e);
         }
     }
 }

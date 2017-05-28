@@ -12,22 +12,23 @@ public class Remind {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private int id;
+    private long id;
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
     @Column(name = "meet_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date meetDate;
 
     public Remind() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
